@@ -1,0 +1,12 @@
+extends Control
+
+var visible_characters = 0
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	if visible_characters != $RichTextLabel.visible_characters:
+		visible_characters = $RichTextLabel.visible_characters
+		$AudioStreamPlayer2D.play()
+
+
+func _on_animation_player_animation_finished(anim_name):
+	get_tree().change_scene_to_file("res://prefabs/outside.tscn")
