@@ -1,0 +1,16 @@
+extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$ending_scene/Timer.start() #starts the timer
+	$ending_scene/Path2D/PathFollow2D/Camera2D.make_current() #makes the camera the one we see through currently
+	$ending_scene/Path2D/PathFollow2D.progress_ratio=0.0 #makes it so the sprite starts from the start
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_timer_timeout():
+	get_tree().change_scene_to_file("res://prefabs/ending.tscn")
