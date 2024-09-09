@@ -1,0 +1,12 @@
+extends Area2D
+
+
+var destination_position: Vector2 = Vector2(-2550, 1505)
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player"):
+		if global.basement_key == true:
+			var adjusted_position = destination_position / $Sprite2D.scale
+			body.global_position = adjusted_position
+		if global.basement_key == false:
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/portal.dialogue"), "start")
