@@ -1,0 +1,145 @@
+extends CharacterBody2D
+
+const max_speed = 200
+const accel = 1500
+const friction = 600
+
+var input = Vector2.ZERO
+var grandma_in_range = false
+var in_cat_dec= false
+var in_key_dec = false
+var in_bed_dec = false
+var in_win_dec =false
+var in_sta_dec = false
+var in_sew_dec=false
+
+func _ready():
+	if in_bed_dec == true:
+		if Input.is_action_just_pressed("interact"):
+			if global.ready_for_bed == true:
+				print("hi")
+				
+func _physics_process(delta):
+	if grandma_in_range == true:
+		if Input.is_action_just_pressed("interact"):
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/main.dialogue"), "start")
+			return
+
+	if in_bed_dec== true:
+		if Input.is_action_just_pressed("interact"):
+			if global.ready_for_bed == true:
+				get_tree().change_scene_to_file("res://prefabs/time.tscn")
+			if global.ready_for_bed == false:
+				DialogueManager.show_example_dialogue_balloon(load("res://dialogue/tired.dialogue"), "start")
+
+	if in_cat_dec == true:
+		if Input.is_action_just_pressed("interact"):
+			global.found_grandmas_item = true
+			global.given_grandmas_item = true
+			$"../cat/AudioStreamPlayer2D".play()
+		
+
+	if in_key_dec == true:
+		if Input.is_action_just_pressed("interact"):
+			global.basement_key= true
+			
+	if in_win_dec==true:
+		if Input.is_action_just_pressed("interact"):
+			if global.running_away==true:
+				get_tree().change_scene_to_file("res://prefabs/outside.tscn")
+			if global.running_away==false:
+				DialogueManager.show_example_dialogue_balloon(load("res://dialogue/climbing.dialogue"),"start")
+	if in_sta_dec==true:
+		if Input.is_action_just_pressed("interact"):
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/statue.dialogue"),"start")
+	
+	if in_sew_dec:
+		if Input.is_action_just_pressed("interact"):
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/doll.dialogue"),"start") #plays dialogue if the vaiable equals true
+	player_movement(delta)
+
+func get_input():
+	input.x= int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
+	input.y= int(Input.is_action_pressed("down")) - int(Input.is_action_pressed("up"))
+	return input.normalized()  #assigning key board keys to movements
+
+func player_movement(delta):
+	input= get_input()
+	
+	if input == Vector2.ZERO:
+		if velocity.length() > (friction * delta):
+			velocity-= velocity.normalized() * (friction * delta)
+		else:
+			velocity = Vector2.ZERO
+	else:
+		velocity += (input * accel * delta)
+		velocity = velocity.limit_length(max_speed)
+		
+	move_and_slide()
+	
+func _on_detection_area_body_entered(body):
+	if body.has_method("npc"):
+		grandma_in_range = true
+
+
+func _on_detection_area_body_exited(body):
+	if body.has_method("npc"):
+		grandma_in_range = false
+
+func player():
+	pass
+
+func _on_catdetection_body_entered(body):
+	if body.has_method("player"):
+		in_cat_dec= true
+
+func _on_catdetection_body_exited(body):
+		if body.has_method("player"):
+			in_cat_dec= false
+
+func _on_keydetection_body_entered(body):
+	if body.has_method("player"):
+		in_key_dec= true
+
+func _on_keydetection_body_exited(body):
+	if body.has_method("player"):
+		in_key_dec= false
+
+func _on_bed_detection_body_entered(body):
+	if body.has_method("player"):
+		in_bed_dec=true
+
+func _on_bed_detection_body_exited(body):
+	if body.has_method("player"):
+		in_bed_dec=false
+		
+
+func _on_area_2d_body_entered(body):
+	if body.has_method("player"):
+		in_win_dec=true
+		
+func _on_area_2d_body_exited(body):
+	if body.has_method("player"):
+		in_win_dec=false
+		
+func _on_stat_detection_body_entered(body):
+	if body.has_method("player"):
+		in_sta_dec=true
+
+func _on_stat_detection_body_exited(body):
+	if body.has_method("player"):
+		in_sta_dec=false
+
+
+func _on_cat_timer_timeout():
+	$"../cat/AudioStreamPlayer2D".stop()
+	
+
+func _on_sew_detection_body_entered(body):
+	if body.has_method("player"):
+		in_sew_dec=true  #checks if the player is in the area and is in the sew detection area setting the variable to true
+
+
+func _on_sew_detection_body_exited(body):
+	if body.has_method("player"):
+		in_sew_dec=false
