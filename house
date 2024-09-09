@@ -1,0 +1,19 @@
+extends Node2D
+
+@onready var transition = $transition
+
+
+func _ready():
+	transition.play("fade_in") #plays transition
+
+func _process(_delta):
+	if global.found_grandmas_item == true: #checks if the global variable is equal to true
+		$cat.visible = false  
+		$basement_key.visible = true
+		
+	if global.basement_key==true:
+		$basement_key.visible = false
+
+	if global.ready_for_bed == true:
+		$npc.visible = false
+#checks global varaibles and changes visiblity depending on it
