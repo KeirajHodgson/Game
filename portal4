@@ -1,0 +1,17 @@
+extends Area2D
+
+
+var destination_position: Vector2 = Vector2(400, -50)
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player"):
+		if global.running_away ==true:
+			global.ready_for_bed=false
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/no_time.dialogue"), "start")
+			#CHECKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkk
+		if global.ready_for_bed==true:
+			var adjusted_position = destination_position / $Sprite2D.scale
+			body.global_position = adjusted_position
+		if global.ready_for_bed == false:
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/reminder.dialogue"), "start")
