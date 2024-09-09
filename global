@@ -1,0 +1,20 @@
+extends Node
+
+var found_grandmas_item = false
+var given_grandmas_item = false
+
+var basement_key= false
+
+var ready_for_bed = false
+var grabbed_phone = false
+var woken_up = false
+
+var running_away= false
+
+var grandma_dead = false
+
+var finished=false
+
+var start_animation= false
+
+#this holds all the variabes in the game and these variables can be changed from true to false or false to true in any scene
