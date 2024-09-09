@@ -1,0 +1,13 @@
+extends Area2D
+
+
+var destination_position: Vector2 = Vector2(1184, 1100)
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player"):
+		if global.found_grandmas_item==true:
+			var adjusted_position = destination_position / $Sprite2D.scale  # divides the destination we want to go to by the sprites scale because otherwise it didn't take you to where u wanted
+			body.global_position = adjusted_position
+		if global.found_grandmas_item==false:
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogue/reminder2.dialogue"), "start")
+
