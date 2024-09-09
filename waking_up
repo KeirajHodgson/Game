@@ -1,0 +1,94 @@
+extends Node2D
+
+@onready var timer1 = $character/Timer1
+@onready var timer2 = $person/Path2D/PathFollow2D/Timer2
+@onready var timer3 = $object/Timer3
+@onready var timer4 = $running/Timer4
+@onready var cool_down=$object/Path2D/PathFollow2D/cooldown
+@onready var jumpy =$jumpscare/jumpy
+@onready var object_camera2 =$person/Path2D/PathFollow2D/Camera2D
+@onready var object_camera= $object/Path2D/PathFollow2D/Camera2D
+@onready var path_follow3 =$object/Path2D/PathFollow2D
+@onready var path_follow2 =$person/Path2D/PathFollow2D
+@onready var path_follow4 = $running/Path2D/PathFollow2D
+
+# Called when the node enters the scene tree for the first time.
+
+func _ready():
+	$AnimatedSprite2D.play("default")
+	$AudioStreamPlayer2D.play()
+	$jumpscare.visible=false
+	if global.finished==false:
+		timer1.start()
+		timer2.stop()
+		timer3.stop()
+		timer4.stop()
+		cool_down.stop()
+		$running.visible=false
+		$person.visible=false
+		$character/Path2D/PathFollow2D/Sprite2D/Camera2D.make_current()
+		$phone/AudioStreamPlayer2D.play()
+	if global.finished == true:
+		timer1.stop()
+		timer2.start()
+		timer3.stop()
+		timer4.stop()
+		cool_down.stop()
+		object_camera2.make_current()
+		$character.visible=false
+		$person.visible=true
+		path_follow2.progress_ratio=0.0
+		print("Timer 1 timeout: Transition complete.")
+		print("camera switched!!")
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
+
+func _on_timer_1_timeout():
+	get_tree().change_scene_to_file("res://prefabs/cutscene_1.tscn")
+	
+
+func _on_timer_2_timeout():
+	$object.visible=true
+	if $person.visible ==true:
+		timer3.start()
+		timer2.stop()
+		object_camera.make_current()
+		path_follow3.progress_ratio=0.0
+		print("Timer 2 timeout: Object visible.")
+
+func _on_timer_3_timeout():
+	if global.running_away==false:
+		DialogueManager.show_dialogue_balloon(load("res://dialogue/gandma_death.dialogue"),"start")
+		cool_down.start()
+		timer3.stop()
+		jumpy.start()
+		global.running_away=true
+		$jumpscare.visible=true
+		$AudioStreamPlayer2D2.play()
+		print("Timer 3 timeout: Dialogue started, cooldown started.")
+		
+
+
+func _on_timer_4_timeout():
+	get_tree().change_scene_to_file("res://prefabs/last_message.tscn")
+	print("Timer 4 timeout: Changing scene.")
+
+
+func _on_cooldown_timeout():
+	print("Cooldown timeout: Switching cameras.")
+	$running/Path2D/PathFollow2D/Camera2D.make_current()
+	$running.visible=true
+	$object.visible=false
+	path_follow4.progress_ratio=0.0
+	cool_down.stop()
+	timer4.start()
+		##Did this beacsue dialogue manager wouldn't allow me to set any of my gloabl variables true 
+
+
+func _on_jumpy_timeout():
+	$jumpscare.visible=false
+	$AudioStreamPlayer2D2.stop()
+
+#the print statements checked for bugs because I was having problems
