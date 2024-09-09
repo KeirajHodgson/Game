@@ -1,0 +1,11 @@
+extends StaticBody2D
+
+var destination_position: Vector2 = Vector2(-2550, 1505) #the coordinates we want to teleport to
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player"): #checks if the player is in the area
+		if global.running_away == true:
+			var adjusted_position = destination_position / $Sprite2D.scale
+			body.global_position = adjusted_position #updates the body global position incase we need to come back to this scene/area again
+		if global.running_away == false:
+			pass
