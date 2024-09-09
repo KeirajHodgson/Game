@@ -1,0 +1,16 @@
+extends AnimationPlayer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	play("new_animation")
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_animation_finished(anim_name):
+	get_tree().change_scene_to_file("res://prefabs/waking_up.tscn")
+	global.finished=true
