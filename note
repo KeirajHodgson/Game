@@ -1,0 +1,18 @@
+extends Control
+
+var visible_characters = 0
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if global.start_animation==true:
+		if visible_characters != $RichTextLabel.visible_characters:
+			visible_characters = $RichTextLabel.visible_characters
+			$AudioStreamPlayer2D.play()
+			global.finished=true # assigns true to the global variable 
+			print("global.finished:", global.finished) #prints if the variable equals true or false(had issues with assigning it to true)
