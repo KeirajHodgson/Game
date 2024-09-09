@@ -1,0 +1,15 @@
+extends Node2D
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$AudioStreamPlayer2D.play()
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
+
+
+
+func _on_wait_time_timeout():
+	get_tree().change_scene_to_file("res://prefabs/note.tscn")
+	global.start_animation=true
+  #when the timer connected to this code runs out it changes scenes and sets the global start animation variable to true
